@@ -1,6 +1,7 @@
 #include "switcher.h"
 
-void* StandardMemoryManager::Alloc(std::size_t size) noexcept(false) {
+
+void* MemoryManagerSwitcher::_defaultNew(std::size_t size) noexcept(false) {
     if (size == 0)
         size = 1;
     void* p;
@@ -14,7 +15,7 @@ void* StandardMemoryManager::Alloc(std::size_t size) noexcept(false) {
     return p;
 }
 
-void StandardMemoryManager::Free(void *ptr) noexcept {
+void MemoryManagerSwitcher::_defaultDelete(void *ptr) noexcept {
     if (ptr)
         ::free(ptr);
 }
@@ -23,31 +24,29 @@ void MemoryManagerSwitcher::setManager(IMemoryManager *ptr) {
     currentManager = ptr;
 }
 
-IMemoryManager* MemoryManagerSwitcher::getManager() {
-    if (currentManager == nullptr) {
-        auto ptr = (StandardMemoryManager*) ::malloc(sizeof(StandardMemoryManager));
-        new(ptr) StandardMemoryManager();
-        firstManager = currentManager = (IMemoryManager*) ptr;
-    }
-    return currentManager;
+void* MemoryManagerSwitcher::Alloc(std::size_t size) noexcept(false) {
+    if (currentManager == nullptr)
+        return _defaultNew(size);
+    return currentManager->Alloc(size);
 }
 
-MemoryManagerSwitcher::~MemoryManagerSwitcher() {
-    if (firstManager != nullptr)
-        ::free(firstManager);
+void MemoryManagerSwitcher::Free(void *ptr) noexcept {
+    // incorrect
+    if (currentManager == nullptr)
+        _defaultDelete(ptr);
+    currentManager->Free(ptr);
 }
 
 MemoryManagerSwitcher globalSwitcher;
 
 void* operator new(std::size_t size) noexcept(false) {
     std::cout << "My new\n";
-    std::cout << size << ' ' << __LINE__ << std::endl;
-    return globalSwitcher.getManager()->Alloc(size);
+    return globalSwitcher.Alloc(size);
 }
 
 void operator delete(void* ptr) noexcept {
     std::cout << "I deallocate it in my delete, bitches" << std::endl;
-    globalSwitcher.getManager()->Free(ptr);
+    globalSwitcher.Free(ptr);
 }
 
 /*

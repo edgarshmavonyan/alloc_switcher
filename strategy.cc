@@ -24,9 +24,9 @@ void RuntimeHeap::Free(void *ptr) {
 }
 
 void* CurrentMemoryManager::Alloc(std::size_t size) {
-    return globalSwitcher.getManager()->Alloc(size);
+    return globalSwitcher.Alloc(size);
 }
 
 void CurrentMemoryManager::Free(void *ptr) {
-    globalSwitcher.getManager()->Free(ptr);
+    globalSwitcher.Free(ptr);
 }

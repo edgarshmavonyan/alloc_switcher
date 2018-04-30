@@ -7,29 +7,24 @@ public:
     virtual void Free(void* ptr) = 0;
 };
 
-class StandardMemoryManager: public IMemoryManager {
-public:
-    void* Alloc(std::size_t size) noexcept(false) override;
-    void Free(void* ptr) noexcept override;
-};
-
 class MemoryManagerSwitcher {
 private:
-    IMemoryManager* firstManager;
-
     IMemoryManager* currentManager;
+
+    void* _defaultNew(std::size_t size) noexcept (false);
+    void _defaultDelete(void* ptr) noexcept;
 public:
-    MemoryManagerSwitcher(): firstManager(nullptr), currentManager(nullptr) {}
+    MemoryManagerSwitcher(): currentManager(nullptr) {}
 
     MemoryManagerSwitcher(const MemoryManagerSwitcher&) = delete;
-
     MemoryManagerSwitcher& operator=(const MemoryManagerSwitcher&) = delete;
 
     void setManager(IMemoryManager* ptr);
 
-    IMemoryManager* getManager();
+    void* Alloc(std::size_t size) noexcept(false);
+    void Free(void* ptr) noexcept;
 
-    ~MemoryManagerSwitcher();
+    ~MemoryManagerSwitcher() = default;
 };
 
 extern MemoryManagerSwitcher globalSwitcher;
