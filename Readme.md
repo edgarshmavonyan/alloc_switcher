@@ -1,0 +1,1 @@
+Global allocation switcher system
