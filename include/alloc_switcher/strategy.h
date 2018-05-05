@@ -1,18 +1,16 @@
 #pragma once
 #include <iostream>
-#include "switcher.h"
+#include "alloc_switcher/switcher.h"
 
 template<typename Strategy>
 class AllocatedOn {
     using _allocationStrategy = Strategy;
 public:
     void* operator new(std::size_t size) {
-        std::cout << "My created new " << size << '\n';
         return _allocationStrategy::Alloc(size);
     }
     void operator delete(void* ptr) {
-        std::cout << "My created delete \n";
-        return _allocationStrategy::Free(ptr);
+        _allocationStrategy::Free(ptr);
     }
 };
 
@@ -27,3 +25,5 @@ public:
     static void* Alloc(std::size_t size);
     static void Free(void* ptr);
 };
+
+

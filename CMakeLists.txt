@@ -3,5 +3,8 @@ project(alloc_switcher)
 
 set(CMAKE_CXX_STANDARD 14)
 
-#add_library(alloc_switcher STATIC main.cpp)
-add_executable(alloc_switcher main.cpp switcher.cc strategy.cc)
+include_directories(include)
+add_subdirectory(src)
+
+add_executable(alloc_switcher main.cpp)
+target_link_libraries(alloc_switcher alloc_switcher_src)
