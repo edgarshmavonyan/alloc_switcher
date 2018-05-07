@@ -3,6 +3,6 @@ project(alloc_switcher_src)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(SOURCE_FILES new.cc strategy.cc switcher.cc)
+set(SOURCE_FILES new.cc switcher.cc runtimeHeap.cc currentMemoryManager.cc)
 
 add_library(alloc_switcher_src STATIC ${SOURCE_FILES})

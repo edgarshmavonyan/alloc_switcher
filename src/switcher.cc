@@ -1,7 +1,8 @@
 #include "alloc_switcher/switcher.h"
 
+MemoryManager::~MemoryManagerInterface() = default;
 
-IMemoryManager* MemoryManagerSwitcher::currentManager = nullptr;
+MemoryManager* MemoryManagerSwitcher::currentManager = nullptr;
 
 void* MemoryManagerSwitcher::_defaultNew(std::size_t size) noexcept(false) {
     if (size == 0)
@@ -23,25 +24,31 @@ void MemoryManagerSwitcher::_defaultDelete(void *ptr) noexcept {
         ::free(ptr);
 }
 
-void MemoryManagerSwitcher::setManager(IMemoryManager *ptr) {
+void MemoryManagerSwitcher::setManager(MemoryManager *ptr) {
+    ptr->previous = currentManager;
     currentManager = ptr;
+}
+
+void MemoryManagerSwitcher::deleteManager() {
+    if (currentManager)
+        currentManager = currentManager->previous;
 }
 
 void* MemoryManagerSwitcher::Alloc(std::size_t size) noexcept(false) {
     char* ptr;
 
-    if (currentManager == nullptr)
-        ptr = static_cast<char*>(_defaultNew(size + sizeof(IMemoryManager*)));
+    if (!currentManager)
+        ptr = static_cast<char*>(_defaultNew(size + sizeof(MemoryManager*)));
 
     else
-        ptr = static_cast<char*>(currentManager->Alloc(size + sizeof(IMemoryManager*)));
+        ptr = static_cast<char*>(currentManager->Alloc(size + sizeof(MemoryManager*)));
 
-    new(ptr) IMemoryManager*(currentManager);
-    return ptr + sizeof(IMemoryManager*);
+    new(ptr) MemoryManager*(currentManager);
+    return ptr + sizeof(MemoryManager*);
 }
 
 void MemoryManagerSwitcher::Free(void *ptr) {
-    auto usedManager = static_cast<IMemoryManager**>(ptr) - 1;
+    auto usedManager = static_cast<MemoryManager**>(ptr) - 1;
 
     if (*usedManager == nullptr)
         _defaultDelete(static_cast<void*>(usedManager));

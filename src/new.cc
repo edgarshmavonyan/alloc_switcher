@@ -9,7 +9,6 @@ void operator delete(void* ptr) noexcept {
     MemoryManagerSwitcher::Free(ptr);
 }
 
-
 void* operator new(std::size_t size, const std::nothrow_t&) noexcept {
     void* p = nullptr;
     try {
