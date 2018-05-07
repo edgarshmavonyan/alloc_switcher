@@ -1,11 +1,11 @@
 #include "alloc_switcher/currentMemoryManager.h"
-#include "alloc_switcher/switcher.h"
+#include "alloc_switcher/memoryManagerSwitcher.h"
 
 
 void* CurrentMemoryManager::Alloc(std::size_t size) {
-    return MemoryManagerSwitcher::Alloc(size);
+    return globalSwitcher.Alloc(size);
 }
 
 void CurrentMemoryManager::Free(void *ptr) {
-    MemoryManagerSwitcher::Free(ptr);
+    globalSwitcher.Free(ptr);
 }
