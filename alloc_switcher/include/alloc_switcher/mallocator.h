@@ -1,3 +1,4 @@
+#pragma once
 #include "runtimeHeap.h"
 
 template<typename T>

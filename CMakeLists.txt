@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(alloc_stack)
 
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS -fsanitize=address)
 
 include_directories(stack_allocator/include)
 include_directories(alloc_switcher/include)

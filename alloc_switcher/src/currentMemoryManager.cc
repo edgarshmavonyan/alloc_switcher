@@ -3,9 +3,9 @@
 
 
 void* CurrentMemoryManager::Alloc(std::size_t size) {
-    return globalSwitcher.Alloc(size);
+    return MemoryManagerSwitcher::instance().Alloc(size);
 }
 
 void CurrentMemoryManager::Free(void *ptr) {
-    globalSwitcher.Free(ptr);
+    MemoryManagerSwitcher::instance().Free(ptr);
 }

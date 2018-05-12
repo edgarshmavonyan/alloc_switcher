@@ -2,11 +2,11 @@
 
 
 void* operator new(std::size_t size) noexcept(false) {
-    return globalSwitcher.Alloc(size);
+    return MemoryManagerSwitcher::instance().Alloc(size);
 }
 
 void operator delete(void* ptr) noexcept {
-    globalSwitcher.Free(ptr);
+    MemoryManagerSwitcher::instance().Free(ptr);
 }
 
 void* operator new(std::size_t size, const std::nothrow_t&) noexcept {

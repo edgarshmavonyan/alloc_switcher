@@ -1,5 +1,5 @@
 #include <iostream>
-#include "alloc_switcher/memoryManagerSwitcher.h"
+#include "alloc_switcher/singletonBase.h"
 #include "alloc_switcher/loggingMemoryManager.h"
 
 int main() {

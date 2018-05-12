@@ -1,3 +1,4 @@
+#pragma once
 #include "stackallocator/stackAllocator.h"
 #include "memoryManager.h"
 

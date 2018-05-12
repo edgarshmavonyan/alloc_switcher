@@ -10,14 +10,13 @@ int main() {
     auto sequence = generateInsert(1000000);
     auto stackManager = new StackMemoryManager;
 
-
-    globalSwitcher.setManager(stackManager);
+    globalSwitcher().setManager(stackManager);
 
     clock_t t = clock();
     doInsertTesting(sequence);
     std::cout << "Stack time: " << double(clock() - t)/CLOCKS_PER_SEC << std::endl;
 
-    globalSwitcher.deleteManager();
+    globalSwitcher().deleteManager();
 
     t = clock();
     doInsertTesting(sequence);
